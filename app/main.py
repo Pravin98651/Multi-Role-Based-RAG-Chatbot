@@ -14,7 +14,7 @@ security = HTTPBasic()
 chat_service = ChatService()
 document_processor = DocumentProcessor()
 
-# Add CORS middleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -36,7 +36,7 @@ users_db: Dict[str, Dict[str, str]] = {
 class ChatRequest(BaseModel):
     message: str
 
-# Authentication dependency
+
 def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
     username = credentials.username
     password = credentials.password
@@ -45,12 +45,12 @@ def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return {"username": username, "role": user["role"]}
 
-# Login endpoint
+
 @app.get("/login")
 def login(user=Depends(authenticate)):
     return {"message": f"Welcome {user['username']}!", "role": user["role"], "username": user["username"]}
 
-# Protected test endpoint
+#
 @app.get("/test")
 def test(user=Depends(authenticate)):
     return {"message": f"Hello {user['username']}! You can now chat.", "role": user["role"]}
@@ -67,7 +67,7 @@ def startup_load_documents():
 def on_startup():
     startup_load_documents()
 
-# Protected chat endpoint
+
 @app.post("/chat")
 def chat(request: ChatRequest, user=Depends(authenticate)):
     try:
